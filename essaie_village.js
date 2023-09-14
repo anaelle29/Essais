@@ -7,14 +7,18 @@ const createScene =  () => {
     const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
     camera.attachControl(canvas, true);
 
+
+
+
+
     // LIGHT
-    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
-    light.intensity = 1
-
-
-
+    const  light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(0, -1, 1), scene);
+    light.position = new BABYLON.Vector3(0, 50, -100);
 
     // OMBRES
+
+    const shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
+
 
     // AXES
     
@@ -41,12 +45,7 @@ const createScene =  () => {
     largeGround.material = largeGroundMat;
     largeGround.position.y = -0.01;
     
-    /*const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "https://assets.babylonjs.com/environments/villageheightmap.png", {width:190, height:190, subdivisions: 20, minHeight:0, maxHeight: 30});
-    
-    largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
-    largeGroundMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/valleygrass.png");
-
-    largeGround.material = largeGroundMat;*/
+    ground.receiveShadows = true;
 
 
 
@@ -179,6 +178,10 @@ const createScene =  () => {
     }
 }
 
+    shadowGenerator.addShadowCaster(fountain, true);
+    
+
+
 
 
 
@@ -192,7 +195,7 @@ const createScene =  () => {
     detached_house.rotation.y = -Math.PI / 16;
     detached_house.position.x = -10;
     detached_house.position.z = 10;
-
+    shadowGenerator.addShadowCaster(detached_house, true);
 
 
 
@@ -205,7 +208,7 @@ const createScene =  () => {
     semi_house .rotation.y = -Math.PI / 16;
     semi_house.position.x = -4.5;
     semi_house.position.z = 3;
-
+    shadowGenerator.addShadowCaster(semi_house, true);
 
 
 
@@ -303,6 +306,7 @@ const createScene =  () => {
         houses[i].rotation.y = places[i][1];
         houses[i].position.x = places[i][2];
         houses[i].position.z = places[i][3];
+        shadowGenerator.addShadowCaster(houses[i], true);
     }
 
 
@@ -368,6 +372,10 @@ const createScene =  () => {
     car2.position.z = 60;
     car2.rotation.z = (-Math.PI / 2)*4;
 
+    shadowGenerator.addShadowCaster(car, true);
+    shadowGenerator.addShadowCaster(car2, true);
+
+
 
     /////ROUES/////
 
@@ -399,6 +407,11 @@ const createScene =  () => {
     wheelLF = wheelRF.clone("wheelLF");
     wheelLF.position.y = -0.2 - 0.035;
 
+    shadowGenerator.addShadowCaster(wheelRF, true);
+    shadowGenerator.addShadowCaster(wheelRB, true);
+    shadowGenerator.addShadowCaster(wheelLF, true);
+    shadowGenerator.addShadowCaster(wheelLB, true);
+
     // car2
 
     const wheelRB2 = BABYLON.MeshBuilder.CreateCylinder("wheelRB2", {diameter: 0.125, height: 0.05, faceUV : wheelUV, wrap : true})
@@ -418,6 +431,10 @@ const createScene =  () => {
     wheelLF2 = wheelRF2.clone("wheelLF2");
     wheelLF2.position.y = -0.2 - 0.035;
 
+    shadowGenerator.addShadowCaster(wheelRF2, true);
+    shadowGenerator.addShadowCaster(wheelRB2, true);
+    shadowGenerator.addShadowCaster(wheelLF2, true);
+    shadowGenerator.addShadowCaster(wheelLB2, true);
 
 
     // ANIMATION WHEELS //
@@ -569,8 +586,9 @@ const createScene =  () => {
         dude.position = new BABYLON.Vector3(-19, 0, -5);
         dude.rotate(BABYLON.Axis.Y, BABYLON.Tools.ToRadians(-95), BABYLON.Space.LOCAL);
         const startRotation = dude.rotationQuaternion.clone();    
-            
-        scene.beginAnimation(result.skeletons[0], 0, 100, true, 2.0);
+        
+   
+        scene.beginAnimation(result.skeletons[0], 0, 100, true, 1.5);
 
         let distance = 0;
         let step = 0.0015;
@@ -615,6 +633,11 @@ const createScene =  () => {
             }
 			
         })
+        shadowGenerator.addShadowCaster(dude, true);
+        shadowGenerator.addShadowCaster(dude2, true);
+        shadowGenerator.addShadowCaster(dude3, true);
+        
+
     });
 
 
@@ -623,6 +646,9 @@ const createScene =  () => {
     // LAMPS //
 
     const lamp1 = buildLamp(new BABYLON.Vector3(4.5, 0, 4))
+    shadowGenerator.addShadowCaster(lamp1, true);
+
+
     const lamps = [];
     lamps[0] = buildLampClone(lamp1, new BABYLON.Vector3(5, 0, 9), 2);
     lamps[1] = buildLampClone(lamp1, new BABYLON.Vector3(5.5, 0, 14), 3);
@@ -633,6 +659,10 @@ const createScene =  () => {
     lamps[6] = buildLampClone(lamp1, new BABYLON.Vector3(5.5, 0, -26), 8);
     lamps[7] = buildLampClone(lamp1, new BABYLON.Vector3(4.5, 0, -1), 9);
     lamps[8] = buildLampClone(lamp1, new BABYLON.Vector3(4.5, 0, -6), 10);
+
+    for(let i = 0; i<lamps.length; i++){
+        shadowGenerator.addShadowCaster(lamps[i], true);
+    }
 
 
 
