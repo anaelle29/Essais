@@ -9,12 +9,16 @@ const createScene =  () => {
 
     // LIGHT
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
-    light.intensity = 0.2
+    light.intensity = 1
 
-    
+
+
+
+    // OMBRES
+
+    // AXES
     
     new BABYLON.AxesViewer(scene, 5);
-
     const localAxes = new BABYLON.AxesViewer(scene, 1);
 
 
@@ -102,7 +106,7 @@ const createScene =  () => {
 
 
     // Create a particle system
-    var particleSystem = new BABYLON.ParticleSystem("particles", 5000, scene);
+    var particleSystem = new BABYLON.ParticleSystem("particles", 50000, scene);
 
     //Texture of each particle
     particleSystem.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
@@ -132,7 +136,7 @@ const createScene =  () => {
     particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
 
     // Set the gravity of all particles
-    particleSystem.gravity = new BABYLON.Vector3(0, -9.81, 0);
+    particleSystem.gravity = new BABYLON.Vector3(0, -10.81, 0);
 
     // Direction of each particle after it has been emitted
     particleSystem.direction1 = new BABYLON.Vector3(-1, 8, 1);
@@ -144,8 +148,8 @@ const createScene =  () => {
 
     // Speed
     particleSystem.minEmitPower = 0.2;
-    particleSystem.maxEmitPower = 0.6;
-    particleSystem.updateSpeed = 0.01;
+    particleSystem.maxEmitPower = 0.5;
+    particleSystem.updateSpeed = 0.001;
 
     // Start the particle system
     particleSystem.start();
@@ -554,7 +558,7 @@ const createScene =  () => {
         dude2.scaling = new BABYLON.Vector3(0.006, 0.006, 0.006);
 
 
-        dude3 = dude.clone("dude3")
+        dude3 = dude.clone("dude2")
         dude3.position.x = 23;
         dude3.position.y = 0;
         dude3.position.z = -23;
@@ -569,7 +573,7 @@ const createScene =  () => {
         scene.beginAnimation(result.skeletons[0], 0, 100, true, 2.0);
 
         let distance = 0;
-        let step = 0.010;
+        let step = 0.0015;
         let p = 0;
 
         scene.onBeforeRenderObservable.add(() => {
@@ -615,27 +619,68 @@ const createScene =  () => {
 
 
 
-    // LAMP //
-
-    const lamp1 = buildLamp(new BABYLON.Vector3(4, 0, 4))
     
+    // LAMPS //
 
-    
+    const lamp1 = buildLamp(new BABYLON.Vector3(4.5, 0, 4))
     const lamps = [];
-    lamps[0] = buildLampInstances(new BABYLON.Vector3(5, 0, 9), lamp1, 2);
-    
+    lamps[0] = buildLampClone(lamp1, new BABYLON.Vector3(5, 0, 9), 2);
+    lamps[1] = buildLampClone(lamp1, new BABYLON.Vector3(5.5, 0, 14), 3);
+    lamps[2] = buildLampClone(lamp1, new BABYLON.Vector3(5.5, 0, 19), 4);
+    lamps[3] = buildLampClone(lamp1, new BABYLON.Vector3(4.5, 0, -11), 5);
+    lamps[4] = buildLampClone(lamp1, new BABYLON.Vector3(4.5, 0, -16), 6);
+    lamps[5] = buildLampClone(lamp1, new BABYLON.Vector3(5, 0, -21), 7);
+    lamps[6] = buildLampClone(lamp1, new BABYLON.Vector3(5.5, 0, -26), 8);
+    lamps[7] = buildLampClone(lamp1, new BABYLON.Vector3(4.5, 0, -1), 9);
+    lamps[8] = buildLampClone(lamp1, new BABYLON.Vector3(4.5, 0, -6), 10);
+
+
+
+
+
+    // DAY OR NIGHT
+
+    const adt = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    const panel = new BABYLON.GUI.StackPanel();
+    panel.width = "220px";
+    panel.top = "-25px";
+    panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    adt.addControl(panel);
+
+    const header = new BABYLON.GUI.TextBlock();
+    header.text = "Night to Day";
+    header.height = "30px";
+    header.color = "white";
+    panel.addControl(header); 
+
+    const slider = new BABYLON.GUI.Slider();
+    slider.minimum = 0;
+    slider.maximum = 1;
+    slider.borderColor = "black";
+    slider.color = "gray";
+    slider.background = "white";
+    slider.value = 1;
+    slider.height = "20px";
+    slider.width = "200px";
+    slider.onValueChangedObservable.add((value) => {
+        if (light) {
+            light.intensity = value;
+        }
+    });
+    panel.addControl(slider);
+
+
+
+
 
 
     return scene;
 }
 
 
-const buildLampInstances = (position, lamp, i) => {
-    const new_name = "lamp" + i;
-    const instance = lamp.createInstance(new_name);
-    instance.position = position;
-    return instance;
-}
+
 
 
 
@@ -646,8 +691,15 @@ const buildLampInstances = (position, lamp, i) => {
 
 
 
-
 // LAMPS
+
+
+const buildLampClone = (lamp, position, i) =>{
+    new_name = "lamp"+i;
+    const clone = lamp.clone(new_name);
+    clone.position = position;
+    return clone;
+}
 
 const buildLampLight = () => {
     const lampLight = new BABYLON.SpotLight("lampLight", BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, -10, 0), Math.PI, 1);
@@ -707,10 +759,12 @@ const buildLamp = (position) => {
     const lampBulb = buildLampBulb();
     
     lampBulb.parent = lamp;
-    const lampLight = buildLampLight()
-    lampLight.parent = lampBulb;
+    buildLampLight().parent = lampBulb;
     return lamp;
 }
+
+
+
 
 // GROUND
 
