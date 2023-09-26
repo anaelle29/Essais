@@ -17,7 +17,7 @@ var createScene = function () {
     var toit = BABYLON.MeshBuilder.CreateBox("toit", {height : heightt, width : widtht, depth: deptht}, scene);
     
 
-    const nblombardes = 4;
+    const nblombardes = 6;
     var lombardes = []
 
     for(let i = 0; i <=(nblombardes-1); i++){
@@ -26,23 +26,28 @@ var createScene = function () {
         var depthl = deptht-0.5
         var facteur = (widtht+4)/(nblombardes+1);
         lombardes.push(BABYLON.MeshBuilder.CreateBox("lombardes", {height: heightl, width : widthl, depth : depthl}, scene));
-        if (i==0){
-
-            
+        
+        if (i==0 && nblombardes%2 != 0){
+            lombardes[i].position.x = 0
+        }
+        
+        else if (i==0 && nblombardes%2 == 0){
+             
             lombardes[i].position.x = -(facteur/2)
         }
 
         else if(i==(nblombardes/2)+1){
-            console.log("bla")
+ 
             lombardes[i].position.x = facteur/2
         }
         else if(i>=0 && (i+1)<=(nblombardes-(nblombardes%2))/2){
-            lombardes[i].position.x = -((facteur/2)+facteur)
+            lombardes[i].position.x = -((facteur/2)+facteur*i)
         }
 
         else{
-            lombardes[i].position.x = ((facteur/2)+facteur)
+            lombardes[i].position.x = ((facteur/2)+facteur*i)
         }
+        console.log(i, lombardes[i].position.x)
 
         lombardes[i].position.y = -heightt/2 -heightl/2
         lombardes[i].position.z = 0.5/2
