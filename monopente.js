@@ -17,39 +17,38 @@ var createScene = function () {
     var toit = BABYLON.MeshBuilder.CreateBox("toit", {height : heightt, width : widtht, depth: deptht}, scene);
     
 
-    const nblombardes = 6;
+    const nblombardes = 5;
     const lombardes = []
 
+   
+   
     for(let i = 0; i <=(nblombardes-1); i++){
         var heightl = 0.5
         var widthl = 0.5
         var depthl = deptht-0.5
-        var facteur = (widtht+4)/(nblombardes+1);
+        var facteur = (widtht-2)/(nblombardes-1);
         lombardes.push(BABYLON.MeshBuilder.CreateBox("lombardes", {height: heightl, width : widthl, depth : depthl}, scene));
         
         if (i==0 && nblombardes%2 != 0){
             lombardes[i].position.x = 0
-            console.log( "if", i, lombardes[i].position.z);
+            console.log( "if", i, lombardes[i].position.x);
         }
-        
-        else if (i==0 && nblombardes%2 == 0){
-            lombardes[i].position.x = -(facteur/2)
+
+        else if(i>=0 && (i+1)<=((nblombardes-(nblombardes%2))/2) && (nblombardes%2==0)){
+            console.log('bla')
+            lombardes[i].position.x = -(((facteur)/2)+facteur*i)
             console.log( "elif1", i, lombardes[i].position.x)
         }
 
-        // else if(i==(nblombardes/2)){
-        //     lombardes[i].position.x = facteur/2
-        //     console.log( "elif2", i, lombardes[i].position.x)
-        // }
-        else if(i>=1 && (i+1)<=((nblombardes-(nblombardes%2))/2)){
-            lombardes[i].position.x = -((facteur/2)+facteur*i)
-            console.log( "elif3", i, lombardes[i].position.x)
+        else if(i>=0 && (i+1)<=((nblombardes-(nblombardes%2))/2)+1 && (nblombardes%2!=0)){
+            console.log('bli')
+            lombardes[i].position.x = -(facteur*i)
+            console.log( "elif2", i, lombardes[i].position.x)
         }
 
         else{
             lombardes[i].position.x = -lombardes[i-(((nblombardes-(nblombardes%2))/2))].position.x
-            // -(lombardes[i-((nblombardes-(nblombardes%2))/2)-1].position.x)
-            console.log( "els", i, lombardes[i-1].position.x)
+            console.log( "elif3", i, lombardes[i-1].position.x)
         }
         
 
@@ -58,9 +57,7 @@ var createScene = function () {
         
         
     }
-    for(let j = 0; j<=2; j++){
-        console.log(lombardes, lombardes[j+1].position.x)
-    }
+    
     
     return scene;
 };
