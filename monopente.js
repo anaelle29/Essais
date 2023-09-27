@@ -18,7 +18,7 @@ var createScene = function () {
     
 
     const nblombardes = 6;
-    var lombardes = []
+    const lombardes = []
 
     for(let i = 0; i <=(nblombardes-1); i++){
         var heightl = 0.5
@@ -29,31 +29,38 @@ var createScene = function () {
         
         if (i==0 && nblombardes%2 != 0){
             lombardes[i].position.x = 0
+            console.log( "if", i, lombardes[i].position.z);
         }
         
         else if (i==0 && nblombardes%2 == 0){
-             
             lombardes[i].position.x = -(facteur/2)
+            console.log( "elif1", i, lombardes[i].position.x)
         }
 
-        else if(i==(nblombardes/2)+1){
- 
-            lombardes[i].position.x = facteur/2
-        }
-        else if(i>=0 && (i+1)<=(nblombardes-(nblombardes%2))/2){
+        // else if(i==(nblombardes/2)){
+        //     lombardes[i].position.x = facteur/2
+        //     console.log( "elif2", i, lombardes[i].position.x)
+        // }
+        else if(i>=1 && (i+1)<=((nblombardes-(nblombardes%2))/2)){
             lombardes[i].position.x = -((facteur/2)+facteur*i)
+            console.log( "elif3", i, lombardes[i].position.x)
         }
 
         else{
-            lombardes[i].position.x = ((facteur/2)+facteur*i)
+            lombardes[i].position.x = -lombardes[i-(((nblombardes-(nblombardes%2))/2))].position.x
+            // -(lombardes[i-((nblombardes-(nblombardes%2))/2)-1].position.x)
+            console.log( "els", i, lombardes[i-1].position.x)
         }
-        console.log(i, lombardes[i].position.x)
+        
 
         lombardes[i].position.y = -heightt/2 -heightl/2
         lombardes[i].position.z = 0.5/2
         
         
     }
-
+    for(let j = 0; j<=2; j++){
+        console.log(lombardes, lombardes[j+1].position.x)
+    }
+    
     return scene;
 };
