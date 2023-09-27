@@ -26,7 +26,7 @@ var createScene = function () {
         var heightl = 0.5
         var widthl = 0.5
         var depthl = deptht-0.5
-        var facteur = (widtht-2)/(nblombardes-1);
+        var facteur = (widtht-(widthl/2)*4)/(nblombardes-1);
         lombardes.push(BABYLON.MeshBuilder.CreateBox("lombardes", {height: heightl, width : widthl, depth : depthl}, scene));
         
         if (i==0 && nblombardes%2 != 0){
